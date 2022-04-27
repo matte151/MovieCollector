@@ -5,17 +5,19 @@
 
 {% for movie in movies %}
   <div class="card">
-    <div class="card-content">
-      <span class="card-title">{{ movie.name }}</span>
-      <p>Genre: {{ movie.genre }}</p>
-      <p>Series: {{ movie.series }}</p>
-      <p>Location: {{ movie.location }}</p>
-      {% if movie.days_rented > 0 %}
-        <p>Days Rented: {{ movie.days_rented }}</p>
-      {% else %}
-        <p>In Stock</p>
-      {% endif %}
-    </div>
+    <a href="{% url 'detail' movie.id %}">
+     <div class="card-content">
+       <span class="card-title">{{ movie.name }}</span>
+        <p>Genre: {{ movie.genre }}</p>
+        <p>Series: {{ movie.series }}</p>
+       <p>Location: {{ movie.location }}</p>
+        {% if movie.stock > 0 %}
+          <p>In Stock</p>
+        {% else %}
+          <p>Not here, is it rented?</p>
+        {% endif %}
+      </div>
+    </a>
   </div>
 
 {% endfor %}
