@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 # Add the following import
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Movie
+from .models import Movie, Snack
 from .forms import RentalForm
 
 
@@ -47,8 +47,9 @@ def movies_index(request):
 
 def movies_detail(request, movie_id):
   movie = Movie.objects.get(id=movie_id)
+  lonely_snacks = Snack.objects.exclude(id__in = movie.snacks.all().values_list('id'))
   rental_form = RentalForm()
-  return render(request, 'movies/detail.html', {'movie': movie, 'rental_form': rental_form})
+  return render(request, 'movies/detail.html', {'movie': movie, 'rental_form': rental_form, 'snacks': lonely_snacks})
 
 def add_rental(request, movie_id):
    # create a ModelForm instance using the data in request.POST
@@ -60,4 +61,9 @@ def add_rental(request, movie_id):
     new_rental = form.save(commit=False)
     new_rental.movie_id = movie_id
     new_rental.save()
+  return redirect('detail', movie_id=movie_id)
+
+def assoc_snack(request, movie_id, snack_id):
+  # Note that you can pass a toy's id instead of the whole object
+  Movie.objects.get(id=movie_id).snacks.add(snack_id)
   return redirect('detail', movie_id=movie_id)
